@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 
-def _candidate_roots(start: Path) -> list[Path]:
+def _path_and_parents(start: Path) -> list[Path]:
     return [start, *start.parents]
 
 
@@ -13,7 +13,7 @@ def project_root() -> Path:
     for parent in current.parents:
         if all((parent / directory).is_dir() for directory in required_dirs):
             return parent
-    for candidate in _candidate_roots(Path.cwd().resolve()):
+    for candidate in _path_and_parents(Path.cwd().resolve()):
         if (candidate / "pyproject.toml").exists() and (candidate / "configs").exists() and (candidate / "src").exists():
             return candidate
     return Path.cwd().resolve()
