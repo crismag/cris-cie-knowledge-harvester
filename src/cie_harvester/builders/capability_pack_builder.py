@@ -60,7 +60,9 @@ def build_capability_pack(
         "output_mapping.yaml": capability["capability"]["output_mapping"],
         "source_trace.yaml": capability["capability"]["source_trace"],
     }
-    score_report = score_capability(extracted_features, extracted_questions, hidden_requirements, taxonomy_domain, scoring_config)
+    module_features = [feature for feature in extracted_features if feature.get("type") == "module"]
+    hidden_requirement_names = [hidden_requirement.get("name") for hidden_requirement in hidden_requirements]
+    score_report = score_capability(module_features, extracted_questions, hidden_requirement_names, taxonomy_domain, scoring_config)
     promoted, reasons = should_promote(score_report["score"], scoring_config, [])
     output_dir.mkdir(parents=True, exist_ok=True)
     for filename, payload in pack_data.items():
