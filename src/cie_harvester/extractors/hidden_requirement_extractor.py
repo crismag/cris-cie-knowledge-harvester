@@ -19,7 +19,6 @@ HIDDEN_REQUIREMENT_HINTS = [
 
 def extract_hidden_requirements(inventory: dict[str, Any]) -> list[str]:
     haystack = " ".join(inventory.get("files", []) + [inventory.get("local_path", "")]).lower()
-    matches = [hint for hint in HIDDEN_REQUIREMENT_HINTS if any(token in haystack for token in hint.split())]
-    if not matches:
-        matches = HIDDEN_REQUIREMENT_HINTS[:4]
+    normalized_haystack = " ".join(haystack.split())
+    matches = [hint for hint in HIDDEN_REQUIREMENT_HINTS if " ".join(hint.lower().split()) in normalized_haystack]
     return dedupe_strings(matches)

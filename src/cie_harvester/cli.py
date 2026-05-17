@@ -11,6 +11,7 @@ from cie_harvester.core.paths import (
     ensure_workspace_dirs,
     extracted_features_path,
     extracted_questions_path,
+    is_safe_path_component,
     inventory_path_for_source,
     pack_path,
     project_root,
@@ -311,20 +312,25 @@ def cmd_extract(args: argparse.Namespace) -> int:
     source = find_source(args.source)
     if not source:
         raise ConfigError(f"unknown source: {args.source}")
-    inventory = load_yaml(inventory_path_for_source(source["name"]))
+    inventory_path = inventory_path_for_source(source["name"])
+    if not inventory_path.exists():
+        raise SourceError(f"inventory not found: {inventory_path}")
+    inventory = load_yaml(inventory_path)
     taxonomy = load_yaml(configs_dir() / "taxonomy.yaml").get("domains", {}).get(source["domain"], {})
     modules = extract_modules(inventory, taxonomy)
     workflows = extract_workflow_patterns(inventory)
     roles = extract_role_permission_patterns(inventory)
     hidden = extract_hidden_requirements(inventory)
     features = _build_feature_entries(modules, workflows, roles, hidden)
-    questions = {"question_groups": extract_question_groups(modules, hidden, roles)}
+    questions = {"question_groups": extract_question_groups(modules, hidden, roles, source["domain"])}
     write_yaml(extracted_features_path(source["name"]), {"features": features, "modules": modules, "workflows": workflows, "roles": roles, "hidden_requirements": hidden})
     write_yaml(extracted_questions_path(source["name"]), questions)
     return 0
 
 
 def cmd_build_pack(args: argparse.Namespace) -> int:
+    if not is_safe_path_component(args.pack_id):
+        raise ConfigError("pack id must be a safe path component")
     sources = sources_for_domain(args.domain)
     if not sources:
         raise ConfigError(f"no enabled sources for domain: {args.domain}")
@@ -332,15 +338,18 @@ def cmd_build_pack(args: argparse.Namespace) -> int:
     scoring = load_yaml(configs_dir() / "scoring.yaml")
     extracted_features: list[dict] = []
     extracted_questions: list[dict] = []
+    hidden_requirements: list[str] = []
     for source in sources:
         features_path = extracted_features_path(source["name"])
         questions_path = extracted_questions_path(source["name"])
         if features_path.exists():
-            extracted_features.extend(load_yaml(features_path).get("features", []))
+            feature_payload = load_yaml(features_path)
+            extracted_features.extend(feature_payload.get("features", []))
+            hidden_requirements.extend(feature_payload.get("hidden_requirements", []))
         if questions_path.exists():
             extracted_questions.extend(load_yaml(questions_path).get("question_groups", []))
     if not extracted_questions:
-        extracted_questions = extract_question_groups([], [], [])
+        extracted_questions = extract_question_groups([], [], [], args.domain)
     output_dir = pack_path(args.pack_id)
     build_capability_pack(
         args.pack_id,
@@ -349,7 +358,7 @@ def cmd_build_pack(args: argparse.Namespace) -> int:
         sources,
         extracted_features,
         extracted_questions,
-        [],
+        hidden_requirements,
         scoring,
         output_dir,
     )
@@ -357,12 +366,16 @@ def cmd_build_pack(args: argparse.Namespace) -> int:
 
 
 def cmd_validate_pack(args: argparse.Namespace) -> int:
+    if not is_safe_path_component(args.pack):
+        raise ConfigError("pack id must be a safe path component")
     result = validate_pack(pack_path(args.pack))
     print(result)
     return 0
 
 
 def cmd_export_pack(args: argparse.Namespace) -> int:
+    if not is_safe_path_component(args.pack):
+        raise ConfigError("pack id must be a safe path component")
     validate_pack(pack_path(args.pack))
     target = Path(args.target).expanduser()
     export_pack_to_target(pack_path(args.pack), target, args.pack)

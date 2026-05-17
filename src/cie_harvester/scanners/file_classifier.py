@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-DOC_NAMES = {"readme", "changelog", "contributing", "docs", "license"}
+DOC_NAMES = {"readme", "changelog", "contributing", "license"}
 CONFIG_FILES = {"pyproject.toml", "package.json", "requirements.txt", "setup.py", "setup.cfg", "go.mod", "cargo.toml", "pom.xml", "composer.json", "gemfile"}
 PACKAGE_FILES = {"package.json", "pyproject.toml", "requirements.txt", "go.mod", "cargo.toml", "pom.xml", "composer.json", "gemfile"}
 TEST_HINTS = ("test", "tests", "spec")
@@ -33,7 +33,7 @@ def classify_file(path: str | Path) -> dict[str, object]:
     name = file_path.name.lower()
     suffix = file_path.suffix.lower()
     language = EXTENSION_LANGUAGES.get(suffix, "unknown")
-    is_doc = suffix == ".md" or any(token in name for token in DOC_NAMES)
+    is_doc = suffix == ".md" or name in DOC_NAMES or any(part.lower() in {"docs", "documentation"} for part in file_path.parts[:-1])
     is_test = any(token in part.lower() for part in file_path.parts for token in TEST_HINTS) or any(token in name for token in TEST_HINTS)
     is_config = name in CONFIG_FILES or suffix in {".yml", ".yaml", ".json", ".toml", ".ini", ".cfg"}
     is_package = name in PACKAGE_FILES

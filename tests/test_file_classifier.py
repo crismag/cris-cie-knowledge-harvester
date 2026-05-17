@@ -10,3 +10,5 @@ class FileClassifierTests(unittest.TestCase):
         self.assertEqual(classify_file(Path("README.md"))["category"], "docs")
         self.assertTrue(classify_file(Path("tests/test_demo.py"))["is_test"])
         self.assertTrue(classify_file(Path("pyproject.toml"))["is_package"])
+        self.assertEqual(classify_file(Path("src/cie_harvester/sources/license_detector.py"))["category"], "source")
+        self.assertEqual(classify_file(Path("src/cie_harvester/scanners/docs_scanner.py"))["category"], "source")

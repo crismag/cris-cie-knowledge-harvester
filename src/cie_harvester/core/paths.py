@@ -3,15 +3,24 @@ from __future__ import annotations
 from pathlib import Path
 
 
+def _candidate_roots(start: Path) -> list[Path]:
+    return [start, *start.parents]
+
+
 def project_root() -> Path:
     current = Path(__file__).resolve()
     required_dirs = ("configs", "schemas", "skills")
-
     for parent in current.parents:
         if all((parent / directory).is_dir() for directory in required_dirs):
             return parent
+    for candidate in _candidate_roots(Path.cwd().resolve()):
+        if (candidate / "pyproject.toml").exists() and (candidate / "configs").exists() and (candidate / "src").exists():
+            return candidate
+    return Path.cwd().resolve()
 
-    return current.parents[1]
+
+def is_safe_path_component(value: str) -> bool:
+    return bool(value) and value == value.strip() and "/" not in value and "\\" not in value and value not in {".", ".."}
 
 
 def configs_dir(root: Path | None = None) -> Path:

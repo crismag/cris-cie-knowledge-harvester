@@ -5,7 +5,6 @@ from typing import Any
 
 from cie_harvester.builders.markdown_builder import build_promotion_report, build_readme
 from cie_harvester.builders.source_trace_builder import build_source_trace
-from cie_harvester.core.errors import ValidationError
 from cie_harvester.core.yaml_io import write_yaml
 from cie_harvester.normalizers.duplicate_detector import dedupe_strings
 from cie_harvester.scoring.capability_scorer import score_capability
@@ -23,10 +22,8 @@ def build_capability_pack(
     scoring_config: dict[str, Any],
     output_dir: Path,
 ) -> Path:
-    modules = dedupe_strings(
-        [feature["name"] for feature in extracted_features if feature.get("type") == "module"]
-        + list(taxonomy_domain.get("module_hints", []))
-    )
+    module_features = [feature for feature in extracted_features if feature.get("type") == "module"]
+    modules = dedupe_strings([feature["name"] for feature in module_features] + list(taxonomy_domain.get("module_hints", [])))
     question_groups = extracted_questions or []
     hidden_requirements = dedupe_strings(hidden_requirements)
     capability = {
@@ -63,9 +60,7 @@ def build_capability_pack(
         "output_mapping.yaml": capability["capability"]["output_mapping"],
         "source_trace.yaml": capability["capability"]["source_trace"],
     }
-    module_features = [feature for feature in extracted_features if feature.get("type") == "module"]
-    hidden_requirement_names = [hidden_requirement.get("name") for hidden_requirement in hidden_requirements]
-    score_report = score_capability(module_features, extracted_questions, hidden_requirement_names, taxonomy_domain, scoring_config)
+    score_report = score_capability(module_features, extracted_questions, hidden_requirements, taxonomy_domain, scoring_config)
     promoted, reasons = should_promote(score_report["score"], scoring_config, [])
     output_dir.mkdir(parents=True, exist_ok=True)
     for filename, payload in pack_data.items():

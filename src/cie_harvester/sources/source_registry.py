@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any
 
 from cie_harvester.core.errors import ConfigError
-from cie_harvester.core.paths import config_file
+from cie_harvester.core.paths import config_file, is_safe_path_component
 from cie_harvester.core.yaml_io import load_yaml, write_yaml
 
 REQUIRED_FIELDS = ("name", "repo_url", "domain", "license", "enabled", "purpose", "allowed_usage")
@@ -35,6 +35,8 @@ def validate_source_entry(source: dict[str, Any]) -> None:
     missing = [field for field in REQUIRED_FIELDS if field not in source]
     if missing:
         raise ConfigError(f"source entry missing required fields: {', '.join(missing)}")
+    if not is_safe_path_component(str(source["name"])):
+        raise ConfigError("source name must be a safe path component")
     usage = source.get("allowed_usage", {})
     missing_usage = [field for field in REQUIRED_USAGE_FIELDS if field not in usage]
     if missing_usage:

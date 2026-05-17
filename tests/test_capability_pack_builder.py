@@ -23,9 +23,11 @@ class CapabilityPackBuilderTests(unittest.TestCase):
                 sources,
                 features,
                 questions,
-                [],
+                ["audit trail"],
                 {"promotion_rules": {"promote_if_score_above": 0, "reject_if": []}, "scoring": {}},
                 output,
             )
             self.assertEqual(load_yaml(output / "CAPABILITY.yaml")["capability"]["id"], "project_management_interviewer")
+            self.assertEqual(load_yaml(output / "CAPABILITY.yaml")["capability"]["modules"], ["project", "task"])
+            self.assertEqual(load_yaml(output / "hidden_requirements.yaml")["hidden_requirement_checks"], ["audit trail"])
             self.assertTrue(validate_pack(output)["valid"])
