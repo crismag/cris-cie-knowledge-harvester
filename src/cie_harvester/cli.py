@@ -314,7 +314,7 @@ def cmd_extract(args: argparse.Namespace) -> int:
         raise ConfigError(f"unknown source: {args.source}")
     inventory_path = inventory_path_for_source(source["name"])
     if not inventory_path.exists():
-        raise SourceError(f"inventory not found: {inventory_path}")
+        raise SourceError(f"inventory not found for source: {source['name']}")
     inventory = load_yaml(inventory_path)
     taxonomy = load_yaml(configs_dir() / "taxonomy.yaml").get("domains", {}).get(source["domain"], {})
     modules = extract_modules(inventory, taxonomy)

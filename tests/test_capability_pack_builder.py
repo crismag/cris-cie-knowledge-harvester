@@ -29,5 +29,5 @@ class CapabilityPackBuilderTests(unittest.TestCase):
             )
             self.assertEqual(load_yaml(output / "CAPABILITY.yaml")["capability"]["id"], "project_management_interviewer")
             self.assertEqual(load_yaml(output / "CAPABILITY.yaml")["capability"]["modules"], ["project", "task"])
-            self.assertEqual(load_yaml(output / "hidden_requirements.yaml")["hidden_requirement_checks"], ["audit trail"])
+            self.assertEqual(load_yaml(output / "hidden_requirements.yaml"), {"hidden_requirement_checks": ["audit trail"]})
             self.assertTrue(validate_pack(output)["valid"])

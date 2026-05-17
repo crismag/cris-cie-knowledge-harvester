@@ -15,11 +15,15 @@ HIDDEN_REQUIREMENT_HINTS = [
     "activity history",
     "workspace settings",
 ]
+NORMALIZED_HIDDEN_REQUIREMENT_HINTS = [" ".join(hint.lower().split()) for hint in HIDDEN_REQUIREMENT_HINTS]
 
 
 def extract_hidden_requirements(inventory: dict[str, Any]) -> list[str]:
     haystack = " ".join(inventory.get("files", []) + [inventory.get("local_path", "")]).lower()
     normalized_haystack = " ".join(haystack.split())
-    normalized_hints = [" ".join(hint.lower().split()) for hint in HIDDEN_REQUIREMENT_HINTS]
-    matches = [hint for hint, normalized_hint in zip(HIDDEN_REQUIREMENT_HINTS, normalized_hints) if normalized_hint in normalized_haystack]
+    matches = [
+        hint
+        for hint, normalized_hint in zip(HIDDEN_REQUIREMENT_HINTS, NORMALIZED_HIDDEN_REQUIREMENT_HINTS)
+        if normalized_hint in normalized_haystack
+    ]
     return dedupe_strings(matches)

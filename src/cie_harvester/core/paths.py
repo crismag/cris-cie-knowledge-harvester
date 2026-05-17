@@ -20,7 +20,7 @@ def project_root() -> Path:
 
 
 def is_safe_path_component(value: str) -> bool:
-    return bool(value) and value == value.strip() and "/" not in value and "\\" not in value and value not in {".", ".."}
+    return bool(value) and value == value.strip() and "/" not in value and "\\" not in value and "\0" not in value and value not in {".", ".."}
 
 
 def configs_dir(root: Path | None = None) -> Path:
