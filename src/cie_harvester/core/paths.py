@@ -4,7 +4,14 @@ from pathlib import Path
 
 
 def project_root() -> Path:
-    return Path(__file__).resolve().parents[3]
+    current = Path(__file__).resolve()
+    required_dirs = ("configs", "schemas", "skills")
+
+    for parent in current.parents:
+        if all((parent / directory).is_dir() for directory in required_dirs):
+            return parent
+
+    return current.parents[1]
 
 
 def configs_dir(root: Path | None = None) -> Path:
