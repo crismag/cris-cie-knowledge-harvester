@@ -19,12 +19,13 @@ def build_capability_pack(
     sources: list[dict[str, Any]],
     extracted_features: list[dict[str, Any]],
     extracted_questions: list[dict[str, Any]],
+    hidden_requirements: list[str],
     scoring_config: dict[str, Any],
     output_dir: Path,
 ) -> Path:
     modules = dedupe_strings([feature["name"] for feature in extracted_features] + list(taxonomy_domain.get("module_hints", [])))
     question_groups = extracted_questions or []
-    hidden_requirements = dedupe_strings([item for feature in extracted_features for item in feature.get("hidden_requirements", [])])
+    hidden_requirements = dedupe_strings(hidden_requirements)
     capability = {
         "capability": {
             "id": pack_id,

@@ -4,6 +4,7 @@ from typing import Any
 
 
 def build_readme(pack: dict[str, Any]) -> str:
+    """Generate a minimal README for a capability pack."""
     capability = pack["capability"]
     lines = [
         f"# {capability['name']}",

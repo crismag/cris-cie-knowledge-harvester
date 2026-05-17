@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from cie_harvester.core.errors import ValidationError
@@ -15,6 +16,6 @@ def validate_capability_schema(data: dict[str, Any]) -> None:
         raise ValidationError(f"capability missing required fields: {', '.join(missing)}")
 
 
-def validate_required_files(pack_path) -> list[str]:
+def validate_required_files(pack_path: Path) -> list[str]:
     required = ["CAPABILITY.yaml", "README.md", "triggers.yaml", "question_bank.yaml", "workflow_patterns.yaml", "role_permission_patterns.yaml", "hidden_requirements.yaml", "output_mapping.yaml", "source_trace.yaml", "promotion_report.md"]
     return [name for name in required if not (pack_path / name).exists()]

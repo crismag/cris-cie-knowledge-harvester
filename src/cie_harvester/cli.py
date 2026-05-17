@@ -229,6 +229,38 @@ def ensure_starter_files() -> None:
             gitkeep.write_text("", encoding="utf-8")
 
 
+def _build_feature_entries(
+    modules: list[dict],
+    workflows: list[dict],
+    roles: list[dict],
+    hidden_requirements: list[str],
+) -> list[dict]:
+    features: list[dict] = []
+    for module in modules:
+        features.append({"name": module["name"], "type": "module", "confidence": module.get("confidence", 0.5)})
+    for workflow in workflows:
+        features.append(
+            {
+                "name": workflow["name"],
+                "type": "workflow",
+                "evidence": workflow.get("evidence"),
+                "confidence": workflow.get("confidence", 0.5),
+            }
+        )
+    for role in roles:
+        features.append(
+            {
+                "name": role["name"],
+                "type": "role_permission",
+                "evidence": role.get("evidence"),
+                "confidence": role.get("confidence", 0.5),
+            }
+        )
+    for item in hidden_requirements:
+        features.append({"name": item, "type": "hidden_requirement", "confidence": 0.4})
+    return features
+
+
 def cmd_init(_: argparse.Namespace) -> int:
     ensure_starter_files()
     return 0
@@ -285,12 +317,7 @@ def cmd_extract(args: argparse.Namespace) -> int:
     workflows = extract_workflow_patterns(inventory)
     roles = extract_role_permission_patterns(inventory)
     hidden = extract_hidden_requirements(inventory)
-    features = (
-        [{"name": module["name"], "type": "module", "confidence": module.get("confidence", 0.5)} for module in modules]
-        + [{"name": workflow["name"], "type": "workflow", "evidence": workflow.get("evidence"), "confidence": workflow.get("confidence", 0.5)} for workflow in workflows]
-        + [{"name": role["name"], "type": "role_permission", "evidence": role.get("evidence"), "confidence": role.get("confidence", 0.5)} for role in roles]
-        + [{"name": item, "type": "hidden_requirement", "confidence": 0.4} for item in hidden]
-    )
+    features = _build_feature_entries(modules, workflows, roles, hidden)
     questions = {"question_groups": extract_question_groups(modules, hidden, roles)}
     write_yaml(extracted_features_path(source["name"]), {"features": features, "modules": modules, "workflows": workflows, "roles": roles, "hidden_requirements": hidden})
     write_yaml(extracted_questions_path(source["name"]), questions)
@@ -315,7 +342,17 @@ def cmd_build_pack(args: argparse.Namespace) -> int:
     if not extracted_questions:
         extracted_questions = extract_question_groups([], [], [])
     output_dir = pack_path(args.pack_id)
-    build_capability_pack(args.pack_id, args.domain, taxonomy, sources, extracted_features, extracted_questions, scoring, output_dir)
+    build_capability_pack(
+        args.pack_id,
+        args.domain,
+        taxonomy,
+        sources,
+        extracted_features,
+        extracted_questions,
+        [],
+        scoring,
+        output_dir,
+    )
     return 0
 
 

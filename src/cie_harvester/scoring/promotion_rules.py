@@ -2,6 +2,7 @@ from __future__ import annotations
 
 
 def should_promote(score: int, promotion_config: dict, flags: list[str] | None = None) -> tuple[bool, list[str]]:
+    """Decide whether a pattern should be promoted and return rejection reasons."""
     rejected = set(promotion_config.get("promotion_rules", promotion_config).get("reject_if", []))
     flags = flags or []
     reasons = [flag for flag in flags if flag in rejected]

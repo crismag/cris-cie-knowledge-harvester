@@ -2,6 +2,7 @@ from __future__ import annotations
 
 
 def normalize_string(value: str) -> str:
+    """Normalize a string for comparisons."""
     return " ".join(value.lower().strip().split())
 
 

@@ -4,6 +4,7 @@ from typing import Any
 
 
 def build_source_trace(sources: list[dict[str, Any]]) -> dict[str, Any]:
+    """Build a source trace payload from source registry entries."""
     return {
         "studied_projects": [
             {

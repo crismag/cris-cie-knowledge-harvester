@@ -24,4 +24,7 @@ def extract_workflow_patterns(inventory: dict[str, Any]) -> list[dict[str, Any]]
     if not patterns and inventory.get("detected", {}).get("frameworks"):
         patterns.append({"name": "basic_request_flow", "evidence": "framework_presence", "confidence": 0.4})
     names = dedupe_strings([pattern["name"] for pattern in patterns])
-    return [next(pattern for pattern in patterns if pattern["name"] == name) for name in names]
+    pattern_map = {}
+    for pattern in patterns:
+        pattern_map.setdefault(pattern["name"], pattern)
+    return [pattern_map[name] for name in names]

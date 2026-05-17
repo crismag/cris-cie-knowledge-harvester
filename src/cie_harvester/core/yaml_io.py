@@ -7,6 +7,7 @@ import yaml
 
 
 def load_yaml(path: Path) -> dict[str, Any]:
+    """Load YAML data from a file, returning an empty dict when no data exists."""
     if not path.exists():
         return {}
     data = yaml.safe_load(path.read_text(encoding="utf-8"))

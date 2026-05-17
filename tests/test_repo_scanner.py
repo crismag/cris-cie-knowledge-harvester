@@ -3,10 +3,6 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
-import sys
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-
 from cie_harvester.scanners.repo_scanner import scan_repository
 
 
