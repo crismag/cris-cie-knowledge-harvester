@@ -23,7 +23,10 @@ def build_capability_pack(
     scoring_config: dict[str, Any],
     output_dir: Path,
 ) -> Path:
-    modules = dedupe_strings([feature["name"] for feature in extracted_features] + list(taxonomy_domain.get("module_hints", [])))
+    modules = dedupe_strings(
+        [feature["name"] for feature in extracted_features if feature.get("type") == "module"]
+        + list(taxonomy_domain.get("module_hints", []))
+    )
     question_groups = extracted_questions or []
     hidden_requirements = dedupe_strings(hidden_requirements)
     capability = {
