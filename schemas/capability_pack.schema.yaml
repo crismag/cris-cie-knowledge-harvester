@@ -1,0 +1,12 @@
+capability:
+  id: string
+  name: string
+  version: string
+  domain: string
+  purpose: list
+  activation_triggers: map
+  modules: list
+  question_groups: list
+  hidden_requirement_checks: list
+  output_mapping: map
+  source_trace: map

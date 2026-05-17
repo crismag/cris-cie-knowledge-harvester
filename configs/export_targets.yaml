@@ -1,0 +1,4 @@
+targets:
+  local_cie:
+    path: "../cris-cie/capability_packs"
+    description: "Local CRIS-CIE capability pack folder"
