@@ -28,4 +28,9 @@ def extract_modules(inventory: dict[str, Any], taxonomy: dict[str, Any]) -> list
         name = directory.split("/")[-1]
         modules.append({"name": name, "source": "directory", "confidence": 0.6})
     normalized = dedupe_strings([module["name"] for module in modules])
-    return [{"name": name, "source": next((module["source"] for module in modules if module["name"] == name), "taxonomy"), "confidence": next((module["confidence"] for module in modules if module["name"] == name), 0.5)} for name in normalized]
+    result = []
+    for name in normalized:
+        source = next((module["source"] for module in modules if module["name"] == name), "taxonomy")
+        confidence = next((module["confidence"] for module in modules if module["name"] == name), 0.5)
+        result.append({"name": name, "source": source, "confidence": confidence})
+    return result

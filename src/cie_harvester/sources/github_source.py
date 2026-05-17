@@ -23,7 +23,10 @@ def clone_or_update_repo(source: dict[str, Any], root: Path | None = None) -> Pa
     if local_path.exists():
         if not (local_path / ".git").exists():
             raise SourceError(f"existing path is not a git repository: {local_path}")
-        _run_git(["-C", str(local_path), "pull", "--ff-only"])
+        try:
+            _run_git(["-C", str(local_path), "pull", "--ff-only"])
+        except SourceError as exc:
+            raise SourceError(f"unable to fast-forward update {source['name']}: {exc}") from exc
     else:
         _run_git(["clone", repo_url, str(local_path)], cwd=repos_dir(root))
     return local_path

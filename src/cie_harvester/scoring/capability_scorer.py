@@ -1,8 +1,14 @@
 from __future__ import annotations
 
 
-def score_capability(modules: list[dict], questions: list[dict], hidden_requirements: list[str], taxonomy_domain: dict, scoring: dict) -> dict:
-    weights = scoring.get("scoring", scoring)
+def score_capability(
+    modules: list[dict],
+    questions: list[dict],
+    hidden_requirements: list[str],
+    taxonomy_domain: dict,
+    scoring_config: dict,
+) -> dict:
+    weights = scoring_config.get("scoring", scoring_config)
     base = 0
     base += min(len(modules) * weights.get("feature_frequency", {}).get("weight", 20), 40)
     base += min(sum(len(group.get("questions", [])) for group in questions) * 2, weights.get("interview_value", {}).get("weight", 30))

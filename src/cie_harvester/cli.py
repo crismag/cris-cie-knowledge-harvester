@@ -359,10 +359,10 @@ def build_parser() -> argparse.ArgumentParser:
     extract_parser.add_argument("--source", required=True)
     extract_parser.set_defaults(func=cmd_extract)
 
-    build_parser_cmd = subparsers.add_parser("build-pack")
-    build_parser_cmd.add_argument("--domain", required=True)
-    build_parser_cmd.add_argument("--pack-id", required=True)
-    build_parser_cmd.set_defaults(func=cmd_build_pack)
+    build_pack_parser = subparsers.add_parser("build-pack")
+    build_pack_parser.add_argument("--domain", required=True)
+    build_pack_parser.add_argument("--pack-id", required=True)
+    build_pack_parser.set_defaults(func=cmd_build_pack)
 
     validate_parser = subparsers.add_parser("validate-pack")
     validate_parser.add_argument("--pack", required=True)

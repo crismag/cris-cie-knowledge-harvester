@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-from cie_harvester.normalizers.duplicate_detector import dedupe_strings
-
-
 def normalize_patterns(patterns: list[dict]) -> list[dict]:
     normalized = []
     seen = set()
