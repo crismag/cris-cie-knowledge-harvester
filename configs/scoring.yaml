@@ -1,0 +1,20 @@
+scoring:
+  feature_frequency:
+    weight: 20
+  interview_value:
+    weight: 30
+  domain_relevance:
+    weight: 20
+  generality:
+    weight: 15
+  implementation_bias_risk:
+    weight: -15
+
+promotion_rules:
+  promote_if_score_above: 70
+  reject_if:
+    - too_code_specific
+    - duplicate_pattern
+    - license_unclear
+    - not_relevant_to_interviewing
+    - framework_specific_without_domain_value

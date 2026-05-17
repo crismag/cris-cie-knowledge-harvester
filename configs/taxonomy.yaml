@@ -1,0 +1,48 @@
+domains:
+  project_management:
+    triggers:
+      - project management
+      - task tracker
+      - kanban
+      - workflow management
+      - team collaboration
+    module_hints:
+      - project
+      - task
+      - board
+      - sprint
+      - milestone
+      - team
+      - user
+      - comment
+      - attachment
+      - notification
+      - report
+  crm:
+    triggers:
+      - crm
+      - customer management
+      - lead management
+      - sales pipeline
+    module_hints:
+      - customer
+      - lead
+      - contact
+      - deal
+      - quote
+      - invoice
+      - payment
+  cms:
+    triggers:
+      - cms
+      - content management
+      - blog
+      - publishing
+    module_hints:
+      - post
+      - page
+      - author
+      - category
+      - tag
+      - media
+      - comment

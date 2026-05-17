@@ -1,0 +1,23 @@
+inventory:
+  source_name: string
+  repo_url: string
+  local_path: string
+  scanned_at: string
+  summary:
+    total_files: integer
+    total_directories: integer
+  detected:
+    languages: list
+    frameworks: list
+    package_files: list
+    docs_files: list
+    config_files: list
+    test_files: list
+  directories:
+    frontend: list
+    backend: list
+    api: list
+    database: list
+    docs: list
+    tests: list
+    deployment: list

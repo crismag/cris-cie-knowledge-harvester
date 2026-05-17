@@ -1,0 +1,11 @@
+sources:
+  - name: worklenz
+    repo_url: "https://github.com/Worklenz/worklenz"
+    domain: project_management
+    license: MIT
+    enabled: true
+    purpose: "Study project management, task lifecycle, teams, collaboration, and reporting patterns."
+    allowed_usage:
+      study_patterns: true
+      reuse_code: false
+      generate_training_patterns: true

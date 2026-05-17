@@ -1,0 +1,5 @@
+extracted_pattern:
+  modules: list
+  workflows: list
+  roles: list
+  hidden_requirements: list

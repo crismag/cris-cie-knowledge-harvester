@@ -1,0 +1,11 @@
+source:
+  name: string
+  repo_url: string
+  domain: string
+  license: string
+  enabled: boolean
+  purpose: string
+  allowed_usage:
+    study_patterns: boolean
+    reuse_code: boolean
+    generate_training_patterns: boolean
