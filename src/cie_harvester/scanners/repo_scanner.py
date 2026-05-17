@@ -25,9 +25,20 @@ def scan_repository(repo_path: Path, ignored_dirs: set[str] | None = None) -> di
     relative_files = [path.relative_to(repo_path) for path in files]
     package_paths = package_files(relative_files)
     doc_paths = docs_files(relative_files)
-    config_paths = [str(path) for path in relative_files if classify_file(path)["is_config"]]
-    test_paths = [str(path) for path in relative_files if classify_file(path)["is_test"]]
-    languages = sorted({str(classify_file(path)["language"]) for path in relative_files if classify_file(path)["language"] != "unknown"})
+
+    # Classify each file once to avoid repeated scanning
+    classifications = {path: classify_file(path) for path in relative_files}
+
+    config_paths = [str(path) for path, info in classifications.items() if info["is_config"]]
+    test_paths = [str(path) for path, info in classifications.items() if info["is_test"]]
+    languages = sorted(
+        {
+            str(info["language"])
+            for info in classifications.values()
+            if info["language"] != "unknown"
+        }
+    )
+
     frameworks = detect_frameworks(repo_path, [repo_path / path for path in relative_files])
     categorized_dirs = _categorize_directories(repo_path, directories)
     return {
